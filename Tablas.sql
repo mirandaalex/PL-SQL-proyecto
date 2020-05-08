@@ -320,7 +320,7 @@ CREATE OR REPLACE VIEW VW_TIPOLECTOR AS
     FROM TIPOLECTOR
 --*******************************FUNCIONES**********************************
 --FUNCION PARA OBTENER SI UN LECTOR TIENE MULTA (1=TIENE, 0=NO TIENE)
-create or replace FUNCTION FT_MULTA (V_IDLECTOR CHAR)
+CREATE OR REPLACE FUNCTION FT_MULTA (V_IDLECTOR CHAR)
 RETURN NUMBER
 IS
 V_ADEUDO LECTOR.ADEUDO%TYPE;
@@ -338,7 +338,6 @@ BEGIN
     RETURN(V_MULTA);
 END;
 /
-
 --********************************TRIGGERS**********************************
 
 
