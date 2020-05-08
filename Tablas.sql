@@ -265,6 +265,9 @@ BEGIN
 	DBMS_OUTPUT.PUT_LINE('EJEMPLAR DADO DE BAJA EXITOSAMENTE');
 END;
 */
+--********************************TRIGGERS**********************************
+
+
 --********************************BORRADO***********************************
 DROP TABLE AUTOR CASCADE CONSTRAINTS;
 DROP TABLE DIRECTOR CASCADE CONSTRAINTS;
