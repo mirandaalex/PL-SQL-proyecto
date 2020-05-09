@@ -38,3 +38,43 @@ BEGIN
     RETURN(V_RESULTADO);
 END;
 /
+
+
+
+--FUNCION QUE DEVUELVE EL NUERO DE REFRENDOS RESTANTES
+CREATE OR REPLACE FUNCTION ftActualizaRefrendo(
+noEjemplar IN NUMBER,
+idMaterial IN CHAR,
+idLect IN CHAR
+)
+RETURN NUMBER
+IS
+	vRefrendosRestantes NUMBER(5);
+BEGIN
+	SELECT NUMREFRENDO INTO vRefrendosRestantes
+	FROM PRESTAMO
+	WHERE IDLECTOR = idLect 
+	AND NOEJEMPLAR = noEjemplar
+	AND IDMATERIAL = idMaterial;
+	vRefrendosRestantes:=vRefrendosRestantes - 1;
+	RETURN (vRefrendosRestantes);
+END ftActualizaRefrendo;
+/
+
+
+--FUNCION QUE DEVUELVE EL NUMERO DE REFRENDOS POSIBLES SEGUN EL TIPO
+--(RECIBE TIPO)
+CREATE OR REPLACE FUNCTION ftObtieneRefrendoInsert(
+tipoLector IN CHAR
+)
+RETURN NUMBER
+IS
+	vRefrendo NUMBER(5);
+BEGIN
+	SELECT REFRENDOS INTO vRefrendo
+	FROM LECTOR
+	JOIN TIPOLECTOR USING(TIPO)
+	WHERE TIPO = tipoLector;
+	RETURN (vRefrendo);
+END ftObtieneRefrendoInsert;
+/
