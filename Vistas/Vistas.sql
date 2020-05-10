@@ -1,3 +1,4 @@
+SET SERVEROUTPUT ON
 --*********************************VIEWS************************************
 --VIEW DE AUTORES
 CREATE OR REPLACE VIEW VW_AUTOR AS
