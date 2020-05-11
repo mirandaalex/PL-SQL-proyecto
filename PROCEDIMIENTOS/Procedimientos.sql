@@ -89,6 +89,14 @@ begin
     dbms_output.put_line('lector eliminado exitosamente');
 end;
 /
+--baja ejemplar
+create or replace procedure sp_baja_ejemplar(vidmaterial char,vnoejemplar number)
+as
+begin
+    delete from ejemplar where idmaterial=vidmaterial and noejemplar=vnoejemplar;
+    dbms_output.put_line('ejemplar eliminado exitosamente');
+end;
+/
 --baja de tipo de lector
 create or replace procedure sp_baja_tipo_lector(vtipo varchar2)
 as
@@ -118,7 +126,7 @@ create or replace procedure sp_baja_director(viddirector char)
 as
 begin
     delete from director where iddirector=viddirector;
-    dbms_output.put_line('director de tesis dado de alta exitosamente');
+    dbms_output.put_line('director de tesis dado de baja exitosamente');
 end;
 /
 --baja material
@@ -136,6 +144,21 @@ begin
     end if;
 end;
 /
+--baja material
+create or replace procedure sp_baja_ejemplar(vnoejemplar char,vidmaterial char)
+as
+vbaja number;
+begin
+    select count(*) into vbaja
+    from prestamo where noejemplar=vnoejemplar and idmaterial=vidmaterial;
+    if (vbaja=0) then
+        delete from ejemplar where noejemplar=vnoejemplar and idmaterial=vidmaterial;
+        dbms_output.put_line('material dado de baja exitosamente');
+    else
+        raise_application_error (-20606,'el material no se pudo dar de baja, hay '||vbaja ||' en prestamo');
+    end if;
+end;
+/
 --****************************procedimientos de prestamo********************************
 --alta prestamo
 create or replace procedure sp_alta_prestamo(vidlector char,vnoejemplar number,vidmaterial char)
@@ -146,19 +169,26 @@ vrestantes number;
 vdisp varchar(30);
 vtotal number(9);
 vtotal1 number(9);
+vbaja number(3);
 begin    
     vrestantes:= ft_materialrestante(vidlector);
     vtotal:= ft_verficamulta(vidlector);
-    if vrestantes>0 and vtotal=0 then 
-        vfechavenc:=ft_fechadev(vidlector);
-        vnumrefrendo:=ft_obtiene_refrendo(vidlector);
-        insert into prestamo(idlector,noejemplar,idmaterial,fechaprest,fechavenc,numrefrendo) 
-        values(vidlector,vnoejemplar,vidmaterial,sysdate,vfechavenc,vnumrefrendo);
-        dbms_output.put_line('prestamo realizado correctamente');
-    elsif (vtotal <> 0) then
-        raise_application_error (-20602,'el lector tiene multas, no puede sacar material');
+    select count(*) into vbaja
+    from prestamo where noejemplar=vnoejemplar and idmaterial=vidmaterial;
+    if (vbaja=0) then
+        if vrestantes>0 and vtotal=0 then 
+            vfechavenc:=ft_fechadev(vidlector);
+            vnumrefrendo:=ft_obtiene_refrendo(vidlector);
+            insert into prestamo(idlector,noejemplar,idmaterial,fechaprest,fechavenc,numrefrendo) 
+            values(vidlector,vnoejemplar,vidmaterial,sysdate,vfechavenc,vnumrefrendo);
+            dbms_output.put_line('prestamo realizado correctamente');
+        elsif (vtotal <> 0) then
+            raise_application_error (-20602,'el lector tiene multas, no puede sacar material');
+        else
+            raise_application_error (-20603,'no se pudo realizar el prestamo, debido a que se exedio el limite de material permitido');
+        end if;
     else
-        raise_application_error (-20603,'no se pudo realizar el prestamo, debido a que se exedio el limite de material permitido');
+        raise_application_error (-20606,'no se pudo realizar el prestamo, debido a que el ejemplar se encuentra en prestamo');
     end if;
 end;
 /
@@ -175,7 +205,7 @@ begin
     into vfechavenc
     from prestamo
     where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
-    vfechadev:=sysdate;
+    vfechadev:=sysdate+15;
     vaux:=trunc(vfechadev)-trunc(vfechavenc);
     if (vaux=0) then
         vnumrefrendo:=ft_actualiza_refrendo(vidlector,vnoejemplar,vidmaterial);
@@ -275,7 +305,7 @@ begin
     into vfechavenc
     from prestamo
     where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
-    vfechadev:=sysdate+15;
+    vfechadev:=sysdate+15;--le sumamos 15 dias para que con ciertos tipos de usuarios nos marque multa y con otros no (puramente para las pruebas)
     vaux:=trunc(vfechadev)-trunc(vfechavenc);
     if (vaux<=0) then
         delete from prestamo where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;

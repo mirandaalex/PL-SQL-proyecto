@@ -32,7 +32,7 @@ create or replace view vw_pertenece as
 --view de prestamos
 create or replace view vw_prestamo as
   select idlector,noejemplar,idmaterial,fechaprest,
-  fechavenc,diasatraso,fechamulta,monto,fechadev,numrefrendo
+  fechavenc,diasatraso,fechamulta,monto,numrefrendo
   from prestamo;
 --view de tesis
 create or replace view vw_tesis as

@@ -35,23 +35,5 @@ begin
     end if;
 end;
 /
---triguer para impedir eliminar un lector si tiene prestamos a su nombre
-create or replace trigger tr_elimina_lector_adeudo
-after delete on lector
-for each row
-declare
-vidlector lector.idlector%type;
-begin
-    select idlector
-    into vidlector
-    from lector
-    where :old.idlector=any(select idlector
-                        from prestamo);
-    if (vidlector <> null) then
-        raise_application_error (-20601,'el lector tiene prestamos a su nombre, no se puede borrar');
-    end if;
-end;
-/
 drop trigger tr_estatus_prestamo;
-drop trigger tr_elimina_lector_adeudo;
 commit;
