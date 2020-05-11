@@ -1,293 +1,308 @@
-SET SERVEROUTPUT ON;
---****************************PROCEDIMIENTOS DE ALTA********************************
---ALTA DE LECTOR
-CREATE OR REPLACE PROCEDURE SP_ALTA_LECTOR(VIDLECTOR CHAR,VNOMBREL VARCHAR2, 
-VAPELLIDOPL VARCHAR2, VAPELLIDOML VARCHAR2, VDELEGACION VARCHAR2,VCOLONIA VARCHAR2,VCALLE VARCHAR2,
-VNUMERO NUMBER,VCP NUMBER,VTIPO VARCHAR2)
-AS
-BEGIN
-    INSERT INTO LECTOR (IDLECTOR,NOMBREL,APELLIDOPL,APELLIDOML,DELEGACION,COLONIA,CALLE,NUMERO,FECHAALTA,CP,ADEUDO,FECHAVIGENCIA,TIPO) 
-    VALUES(VIDLECTOR,VNOMBREL,VAPELLIDOPL,VAPELLIDOML,VDELEGACION,VCOLONIA,VCALLE,VNUMERO,SYSDATE,VCP,0,ADD_MONTHS(SYSDATE,12),VTIPO);
-    DBMS_OUTPUT.PUT_LINE('USUARIO DADO DE ALTA EXITOSAMENTE');
-END;
+set serveroutput on;
+--****************************procedimientos de alta********************************
+--alta de lector
+create or replace procedure sp_alta_lector(vidlector char,vnombrel varchar2, 
+vapellidopl varchar2, vapellidoml varchar2, vdelegacion varchar2,vcolonia varchar2,vcalle varchar2,
+vnumero number,vcp number,vtipo varchar2)
+as
+begin
+    insert into lector (idlector,nombrel,apellidopl,apellidoml,delegacion,colonia,calle,numero,fechaalta,cp,adeudo,fechavigencia,tipo) 
+    values(vidlector,vnombrel,vapellidopl,vapellidoml,vdelegacion,vcolonia,vcalle,vnumero,sysdate,vcp,0,add_months(sysdate,12),vtipo);
+    dbms_output.put_line('usuario dado de alta exitosamente');
+end;
 /
---ALTA DE TIPO DE LECTOR
-CREATE OR REPLACE PROCEDURE SP_ALTA_TIPO_LECTOR(VTIPO VARCHAR2,VLIMITEMAT NUMBER,VDIASPREST NUMBER,VREFRENDOS NUMBER)
-AS
-BEGIN
-    INSERT INTO TIPOLECTOR VALUES(VTIPO,VLIMITEMAT,VDIASPREST,VREFRENDOS);
-    DBMS_OUTPUT.PUT_LINE('TIPO USUARIO CREADO EXITOSAMENTE');
-END;
+--alta de tipo de lector
+create or replace procedure sp_alta_tipo_lector(vtipo varchar2,vlimitemat number,vdiasprest number,vrefrendos number)
+as
+begin
+    insert into tipolector values(vtipo,vlimitemat,vdiasprest,vrefrendos);
+    dbms_output.put_line('tipo usuario creado exitosamente');
+end;
 /
---ALTA AUTOR
-CREATE OR REPLACE PROCEDURE SP_ALTA_AUTOR(VIDAUTOR CHAR,VNACIONALIDAD VARCHAR2,
-VNOMBREA VARCHAR2,VAPELLIDOPA VARCHAR2,VAPELLIDOMA VARCHAR2)
-AS
-BEGIN
-    INSERT INTO AUTOR VALUES(VIDAUTOR,VNACIONALIDAD,VNOMBREA,VAPELLIDOPA,VAPELLIDOMA);
-    DBMS_OUTPUT.PUT_LINE('AUTOR DADO DE ALTA EXITOSAMENTE');
-END;
+--alta autor
+create or replace procedure sp_alta_autor(vidautor char,vnacionalidad varchar2,
+vnombrea varchar2,vapellidopa varchar2,vapellidoma varchar2)
+as
+begin
+    insert into autor values(vidautor,vnacionalidad,vnombrea,vapellidopa,vapellidoma);
+    dbms_output.put_line('autor dado de alta exitosamente');
+end;
 /
---ALTA DIRECTOR DE TESIS
-CREATE OR REPLACE PROCEDURE SP_ALTA_DIRECTOR(VIDDIRECTOR CHAR,VNOMBRED VARCHAR2,
-VAPELLIDOPD VARCHAR2,VAPELLIDOMD VARCHAR2,VGRADO VARCHAR2)
-AS
-BEGIN
-    INSERT INTO DIRECTOR VALUES(VIDDIRECTOR,VNOMBRED,VAPELLIDOPD,VAPELLIDOMD,VGRADO);
-    DBMS_OUTPUT.PUT_LINE('DIRECTOR DE TESIS DADO DE ALTA EXITOSAMENTE');
-END;
+--alta director de tesis
+create or replace procedure sp_alta_director(viddirector char,vnombred varchar2,
+vapellidopd varchar2,vapellidomd varchar2,vgrado varchar2)
+as
+begin
+    insert into director values(viddirector,vnombred,vapellidopd,vapellidomd,vgrado);
+    dbms_output.put_line('director de tesis dado de alta exitosamente');
+end;
 /
---ALTA MATERIAL
-CREATE OR REPLACE PROCEDURE SP_ALTA_MATERIAL(VIDMATERIAL CHAR,VTITULO VARCHAR2,
-VUBICACION CHAR,VCOLOCACION CHAR,VTIPOMATERIAL VARCHAR2)
-AS
-BEGIN
-    INSERT INTO MATERIAL VALUES(VIDMATERIAL,VTITULO,VUBICACION,VCOLOCACION,VTIPOMATERIAL);
-    DBMS_OUTPUT.PUT_LINE('MATERIAL DADO DE ALTA EXITOSAMENTE');
-END;
+--alta material
+create or replace procedure sp_alta_material(vidmaterial char,vtitulo varchar2,
+vubicacion char,vcolocacion char,vtipomaterial varchar2)
+as
+begin
+    insert into material values(vidmaterial,vtitulo,vubicacion,vcolocacion,vtipomaterial);
+    dbms_output.put_line('material dado de alta exitosamente');
+end;
 /
---ALTA TESIS
-CREATE OR REPLACE PROCEDURE SP_ALTA_TESIS(VIDMATERIAL CHAR,VIDDIRECTOR CHAR,
-VIDTESIS CHAR,VCARRERA VARCHAR2,VANOPUB DATE)
-AS
-BEGIN
-    INSERT INTO TESIS VALUES(VIDMATERIAL,VIDDIRECTOR,VIDTESIS,VCARRERA,VANOPUB);
-    DBMS_OUTPUT.PUT_LINE('TESIS DADA DE ALTA EXITOSAMENTE');
-END;
+--alta tesis
+create or replace procedure sp_alta_tesis(vidmaterial char,viddirector char,
+vidtesis char,vcarrera varchar2,vanopub date)
+as
+begin
+    insert into tesis values(vidmaterial,viddirector,vidtesis,vcarrera,vanopub);
+    dbms_output.put_line('tesis dada de alta exitosamente');
+end;
 /
---ALTA LIBRO
-CREATE OR REPLACE PROCEDURE SP_ALTA_LIBRO(VIDMATERIAL CHAR,VNOADQUISICION NUMBER,
-VISBN CHAR,VTEMA VARCHAR2,EDICION VARCHAR2)
-AS
-BEGIN
-    INSERT INTO LIBRO VALUES(VIDMATERIAL,VNOADQUISICION,VISBN,VTEMA,EDICION);
-    DBMS_OUTPUT.PUT_LINE('LIBRO DADO DE ALTA EXITOSAMENTE');
-END;
+--alta libro
+create or replace procedure sp_alta_libro(vidmaterial char,vnoadquisicion number,
+visbn char,vtema varchar2,edicion varchar2)
+as
+begin
+    insert into libro values(vidmaterial,vnoadquisicion,visbn,vtema,edicion);
+    dbms_output.put_line('libro dado de alta exitosamente');
+end;
 /
---ALTA EJEMPLAR
-CREATE OR REPLACE PROCEDURE SP_ALTA_EJEMPLAR(VNOEJEMPLAR NUMBER,VIDMATERIAL CHAR,
-VESTATUS VARCHAR2)
-AS
-BEGIN
-    INSERT INTO EJEMPLAR VALUES(VNOEJEMPLAR,VIDMATERIAL,VESTATUS);
-    DBMS_OUTPUT.PUT_LINE('EJEMPLAR DADO DE ALTA EXITOSAMENTE');
-END;
+--alta ejemplar
+create or replace procedure sp_alta_ejemplar(vnoejemplar number,vidmaterial char,
+vestatus varchar2)
+as
+begin
+    insert into ejemplar values(vnoejemplar,vidmaterial,vestatus);
+    dbms_output.put_line('ejemplar dado de alta exitosamente');
+end;
 /
---ALTA PERTENECE
-CREATE OR REPLACE PROCEDURE SP_ALTA_PERTENECE(VIDAUTOR CHAR,VIDMATERIAL CHAR)
-AS
-BEGIN
-    INSERT INTO PERTENECE VALUES(VIDAUTOR,VIDMATERIAL);
-END;
+--alta pertenece
+create or replace procedure sp_alta_pertenece(vidautor char,vidmaterial char)
+as
+begin
+    insert into pertenece values(vidautor,vidmaterial);
+end;
 /
---****************************PROCEDIMIENTOS DE BAJA********************************
---BAJA DE LECTOR
-CREATE OR REPLACE PROCEDURE SP_BAJA_AUTOR(VIDAUTOR CHAR)
-AS
-BEGIN
-    DELETE FROM AUTOR WHERE IDAUTOR=VIDAUTOR;
-    DBMS_OUTPUT.PUT_LINE('LECTOR ELIMINADO EXITOSAMENTE');
-END;
+--****************************procedimientos de baja********************************
+--baja de autor
+create or replace procedure sp_baja_autor(vidautor char)
+as
+begin
+    delete from autor where idautor=vidautor;
+    dbms_output.put_line('lector eliminado exitosamente');
+end;
 /
---BAJA DE TIPO DE LECTOR
-CREATE OR REPLACE PROCEDURE SP_BAJA_TIPO_LECTOR(VTIPO VARCHAR2)
-AS
-BEGIN
-    DELETE FROM TIPOLECTOR WHERE TIPO=VTIPO;
-    DBMS_OUTPUT.PUT_LINE('TIPO DE LECTOR ELIMINADO EXITOSAMENTE');
+--baja de tipo de lector
+create or replace procedure sp_baja_tipo_lector(vtipo varchar2)
+as
+begin
+    delete from tipolector where tipo=vtipo;
+    dbms_output.put_line('tipo de lector eliminado exitosamente');
     
-END;
+end;
 /
---BAJA LECTOR
-CREATE OR REPLACE PROCEDURE SP_BAJA_LECTOR(vIDLECTOR CHAR)
-AS
-vBaja NUMBER:=0;
-BEGIN
-    SELECT count(*) INTO vBaja
-    FROM PRESTAMO WHERE IDLECTOR=vIDLECTOR;
-    IF vBaja=0 THEN
-        DELETE FROM LECTOR WHERE IDLECTOR=vIDLECTOR;
-        DBMS_OUTPUT.PUT_LINE('LECTOR DADO DE BAJA EXITOSAMENTE');
-    ELSE
-        DBMS_OUTPUT.PUT_LINE('NO SE PUEDE DAR DE BAJA TIENE PRESTAMOS O MULTAS');
-    END IF;
-END;
+--baja lector
+create or replace procedure sp_baja_lector(vidlector char)
+as
+vbaja number:=0;
+begin
+    select count(*) into vbaja
+    from prestamo where idlector=vidlector;
+    if vbaja=0 then
+        delete from lector where idlector=vidlector;
+        dbms_output.put_line('lector dado de baja exitosamente');
+    else
+        dbms_output.put_line('no se puede dar de baja tiene prestamos o multas');
+    end if;
+end;
 /
---BAJA DIRECTOR DE TESIS
-CREATE OR REPLACE PROCEDURE SP_BAJA_DIRECTOR(VIDDIRECTOR CHAR)
-AS
-BEGIN
-    DELETE FROM DIRECTOR WHERE IDDIRECTOR=VIDDIRECTOR;
-    DBMS_OUTPUT.PUT_LINE('DIRECTOR DE TESIS DADO DE ALTA EXITOSAMENTE');
-END;
+--baja director de tesis
+create or replace procedure sp_baja_director(viddirector char)
+as
+begin
+    delete from director where iddirector=viddirector;
+    dbms_output.put_line('director de tesis dado de alta exitosamente');
+end;
 /
---BAJA MATERIAL
-CREATE OR REPLACE PROCEDURE SP_BAJA_MATERIAL(VIDMATERIAL CHAR)
-AS
-vBaja NUMBER;
-BEGIN
-    SELECT count(*) INTO vBaja
-    FROM PRESTAMO WHERE IDMATERIAL=VIDMATERIAL;
-    IF vBaja=0 THEN
-        DELETE FROM MATERIAL WHERE IDMATERIAL=VIDMATERIAL;
-        DBMS_OUTPUT.PUT_LINE('MATERIAL DADO DE BAJA EXITOSAMENTE');
-    ELSE
-        DBMS_OUTPUT.PUT_LINE('EL MATERIAL NO SE PUDO DAR DE BAJA HAY '||vBaja ||' EN PRESTAMO');
-    END IF;
-END;
+--baja material
+create or replace procedure sp_baja_material(vidmaterial char)
+as
+vbaja number;
+begin
+    select count(*) into vbaja
+    from prestamo where idmaterial=vidmaterial;
+    if vbaja=0 then
+        delete from material where idmaterial=vidmaterial;
+        dbms_output.put_line('material dado de baja exitosamente');
+    else
+        dbms_output.put_line('el material no se pudo dar de baja hay '||vbaja ||' en prestamo');
+    end if;
+end;
 /
---****************************PROCEDIMIENTOS DE PRESTAMO********************************
-CREATE OR REPLACE PROCEDURE SP_ALTA_PRESTAMO(VIDLECTOR CHAR,VNOEJEMPLAR NUMBER,VIDMATERIAL CHAR)
-AS
-VFECHAVENC DATE;
-VNUMREFRENDO NUMBER(5);
-vRESTANTES NUMBER;
-vDISP VARCHAR(30);
-vTotal NUMBER(9);
-vTotal1 NUMBER(9);
-BEGIN    
-    vRESTANTES:= ft_materialrestante(vIDLECTOR);--revisa el numero de material que puede sacar
-    vTotal:= ft_VERFICAMULTA(vIDLECTOR); --revisa cuantas multas tiene el lector
-    IF vRESTANTES>0 and vTotal=0 THEN 
-        VFECHAVENC:=FT_FECHADEV(VIDLECTOR);
-        VNUMREFRENDO:=FT_OBTIENE_REFRENDO(VIDLECTOR);
-        INSERT INTO PRESTAMO(IDLECTOR,NOEJEMPLAR,IDMATERIAL,FECHAPREST,FECHAVENC,NUMREFRENDO) 
-        VALUES(VIDLECTOR,VNOEJEMPLAR,VIDMATERIAL,SYSDATE,VFECHAVENC,VNUMREFRENDO);
-        DBMS_OUTPUT.PUT_LINE('PRESTAMO REALIZADO CORRECTAMENTE');
-    ELSIF (vTotal <> 0) THEN
-        RAISE_APPLICATION_ERROR (-20603,'EL LECTOR TIENE MULTAS, NO PUEDE SACAR MATERIAL');
-    ELSE
-        RAISE_APPLICATION_ERROR (-20604,'NO SE PUDO REALIZAR EL PRESTAMO, DEBIDO A QUE SE EXEDIO EL LIMITE DE MATERIAL PERMITIDO');
-    END IF;
-END;
+--****************************procedimientos de prestamo********************************
+--alta prestamo
+create or replace procedure sp_alta_prestamo(vidlector char,vnoejemplar number,vidmaterial char)
+as
+vfechavenc date;
+vnumrefrendo number(5);
+vrestantes number;
+vdisp varchar(30);
+vtotal number(9);
+vtotal1 number(9);
+begin    
+    vrestantes:= ft_materialrestante(vidlector);
+    vtotal:= ft_verficamulta(vidlector);
+    if vrestantes>0 and vtotal=0 then 
+        vfechavenc:=ft_fechadev(vidlector);
+        vnumrefrendo:=ft_obtiene_refrendo(vidlector);
+        insert into prestamo(idlector,noejemplar,idmaterial,fechaprest,fechavenc,numrefrendo) 
+        values(vidlector,vnoejemplar,vidmaterial,sysdate,vfechavenc,vnumrefrendo);
+        dbms_output.put_line('prestamo realizado correctamente');
+    elsif (vtotal <> 0) then
+        raise_application_error (-20602,'el lector tiene multas, no puede sacar material');
+    else
+        raise_application_error (-20603,'no se pudo realizar el prestamo, debido a que se exedio el limite de material permitido');
+    end if;
+end;
 /
-CREATE OR REPLACE PROCEDURE SP_REFRENDO_PRESTAMO(VIDLECTOR CHAR,VNOEJEMPLAR NUMBER,VIDMATERIAL CHAR)
-AS
-VFECHAVENC DATE;
-VFECHADEV DATE;
-VNUEVA_FECHAVENC DATE;
-VNUMREFRENDO NUMBER(5);
-VAUX NUMBER(1);
-BEGIN
-    SELECT FECHAVENC
-    INTO VFECHAVENC
-    FROM PRESTAMO
-    WHERE IDLECTOR=VIDLECTOR AND NOEJEMPLAR=VNOEJEMPLAR AND IDMATERIAL=VIDMATERIAL;
-    VFECHADEV:=SYSDATE;
-    VAUX:=TRUNC(VFECHADEV)-TRUNC(VFECHAVENC);
-    IF (VAUX=0) THEN
-        VNUMREFRENDO:=FT_ACTUALIZA_REFRENDO(VIDLECTOR,VNOEJEMPLAR,VIDMATERIAL);
-        IF (VNUMREFRENDO>=0) THEN
-            VNUEVA_FECHAVENC:=FT_FECHADEV(VIDLECTOR);
-            UPDATE PRESTAMO SET FECHAPREST= SYSDATE, FECHAVENC= VNUEVA_FECHAVENC, NUMREFRENDO=VNUMREFRENDO
-            WHERE IDLECTOR=VIDLECTOR AND NOEJEMPLAR=VNOEJEMPLAR AND IDMATERIAL=VIDMATERIAL;
-            DBMS_OUTPUT.PUT_LINE('REFRENDO REALIZADO, PRESTAMO ACTUALIZADO');
-        ELSE
-            RAISE_APPLICATION_ERROR (-20605,'LOS REFRENDOS DE ESTE LECTOR PARA ESTE LIBRO SE HAN AGOTADO');
-        END IF;
-    ELSE
-        RAISE_APPLICATION_ERROR (-20606,'SOLO SE PERMITEN REFRENDOS EN LAS FECHAS DE VENCIMIENTO DEL PRESTAMO');
-    END IF;
-END;
+--refrendo de prestamo
+create or replace procedure sp_refrendo_prestamo(vidlector char,vnoejemplar number,vidmaterial char)
+as
+vfechavenc date;
+vfechadev date;
+vnueva_fechavenc date;
+vnumrefrendo number(5);
+vaux number(1);
+begin
+    select fechavenc
+    into vfechavenc
+    from prestamo
+    where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
+    vfechadev:=sysdate;
+    vaux:=trunc(vfechadev)-trunc(vfechavenc);
+    if (vaux=0) then
+        vnumrefrendo:=ft_actualiza_refrendo(vidlector,vnoejemplar,vidmaterial);
+        if (vnumrefrendo>=0) then
+            vnueva_fechavenc:=ft_fechadev(vidlector);
+            update prestamo set fechaprest= sysdate, fechavenc= vnueva_fechavenc, numrefrendo=vnumrefrendo
+            where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
+            dbms_output.put_line('refrendo realizado, prestamo actualizado');
+        else
+            raise_application_error (-20604,'los refrendos de este lector para este libro se han agotado');
+        end if;
+    else
+        raise_application_error (-20605,'solo se permiten refrendos en las fechas de vencimiento del prestamo');
+    end if;
+end;
 /
-
-CREATE OR REPLACE PROCEDURE SP_MULTA(VIDLECTOR CHAR,VNOEJEMPLAR NUMBER,VIDMATERIAL CHAR)
-AS
-VFECHAVENC DATE;
-VFECHADEV DATE;
-VAUX NUMBER(3);
-VMONTO NUMBER(5);
-BEGIN
-    SELECT FECHAVENC
-    INTO VFECHAVENC
-    FROM PRESTAMO
-    WHERE IDLECTOR=VIDLECTOR AND NOEJEMPLAR=VNOEJEMPLAR AND IDMATERIAL=VIDMATERIAL;
-    VFECHADEV:=SYSDATE+15;
-    VAUX:=TRUNC(VFECHADEV)-TRUNC(VFECHAVENC);
-    VMONTO:=VAUX*10;
-    UPDATE PRESTAMO SET FECHAMULTA=SYSDATE, DIASATRASO=VAUX,MONTO=VMONTO
-    WHERE IDLECTOR=VIDLECTOR AND NOEJEMPLAR=VNOEJEMPLAR AND IDMATERIAL=VIDMATERIAL;
-    SP_ADEUDO(VIDLECTOR,VNOEJEMPLAR,VIDMATERIAL);
-END;
+--procedimiento para calcular multa
+create or replace procedure sp_multa(vidlector char,vnoejemplar number,vidmaterial char)
+as
+vfechavenc date;
+vfechadev date;
+vaux number(3);
+vmonto number(5);
+begin
+    select fechavenc
+    into vfechavenc
+    from prestamo
+    where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
+    vfechadev:=sysdate+15;
+    vaux:=trunc(vfechadev)-trunc(vfechavenc);
+    vmonto:=vaux*10;
+    update prestamo set fechamulta=sysdate, diasatraso=vaux,monto=vmonto
+    where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
+    sp_adeudo(vidlector,vnoejemplar,vidmaterial);
+end;
 /
-CREATE OR REPLACE PROCEDURE SP_ADEUDO(VIDLECTOR CHAR,VNOEJEMPLAR NUMBER,VIDMATERIAL CHAR)
-AS
-VMONTO NUMBER(15);
-VADEUDO NUMBER(15);
-VNEWADEUDO NUMBER(15);
-BEGIN
-    SELECT MONTO
-    INTO VMONTO
-    FROM PRESTAMO
-    WHERE IDLECTOR=VIDLECTOR AND NOEJEMPLAR=VNOEJEMPLAR AND IDMATERIAL=VIDMATERIAL;
-    SELECT ADEUDO
-    INTO VADEUDO
-    FROM LECTOR
-    WHERE IDLECTOR=VIDLECTOR;
-    IF(VADEUDO=0)THEN
-        VNEWADEUDO:=VMONTO;
-        UPDATE LECTOR SET ADEUDO=VNEWADEUDO
-        WHERE IDLECTOR=VIDLECTOR;
-        DBMS_OUTPUT.PUT_LINE('SE HA REGISTRADO UNA MULTA EXITOSAMENTE');
-    ELSE
-        VNEWADEUDO:=VMONTO+VADEUDO;
-        UPDATE LECTOR SET ADEUDO=VNEWADEUDO
-        WHERE IDLECTOR=VIDLECTOR;
-        DBMS_OUTPUT.PUT_LINE('SE HA REGISTRADO UNA MULTA EXITOSAMENTE');
-    END IF;
-END;
+--procedimiento para calcular adeudo
+create or replace procedure sp_adeudo(vidlector char,vnoejemplar number,vidmaterial char)
+as
+vmonto number(15);
+vadeudo number(15);
+vnewadeudo number(15);
+begin
+    select monto
+    into vmonto
+    from prestamo
+    where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
+    select adeudo
+    into vadeudo
+    from lector
+    where idlector=vidlector;
+    if(vadeudo=0)then
+        vnewadeudo:=vmonto;
+        update lector set adeudo=vnewadeudo
+        where idlector=vidlector;
+        dbms_output.put_line('se ha registrado una multa exitosamente');
+    else
+        vnewadeudo:=vmonto+vadeudo;
+        update lector set adeudo=vnewadeudo
+        where idlector=vidlector;
+        dbms_output.put_line('se ha registrado una multa exitosamente');
+    end if;
+end;
 /
-CREATE OR REPLACE PROCEDURE SP_LIQUIDA_MULTA(VIDLECTOR CHAR,VNOEJEMPLAR NUMBER,VIDMATERIAL CHAR)
-AS
-VMONTO NUMBER(5);
-VADEUDO NUMBER(5);
-VNEWADEUDO NUMBER(5);
-BEGIN
-    SELECT ADEUDO
-    INTO VADEUDO
-    FROM LECTOR
-    WHERE IDLECTOR=VIDLECTOR;
-    SELECT MONTO
-    INTO VMONTO
-    FROM PRESTAMO
-    WHERE IDLECTOR=VIDLECTOR AND NOEJEMPLAR=VNOEJEMPLAR AND IDMATERIAL=VIDMATERIAL;
-    VNEWADEUDO:=VADEUDO-VMONTO;
-    UPDATE PRESTAMO SET FECHAMULTA=NULL, DIASATRASO=NULL,MONTO=NULL
-    WHERE IDLECTOR=VIDLECTOR AND NOEJEMPLAR=VNOEJEMPLAR AND IDMATERIAL=VIDMATERIAL;
-    UPDATE LECTOR SET ADEUDO=VNEWADEUDO WHERE IDLECTOR=VIDLECTOR;
-    DELETE FROM PRESTAMO 
-    WHERE IDLECTOR=VIDLECTOR AND NOEJEMPLAR=VNOEJEMPLAR AND IDMATERIAL=VIDMATERIAL;
-    DBMS_OUTPUT.PUT_LINE('SE ELIMINO LA MULTA EXITOSAMENTE');
-END;
+--procedimiento para borrar multa y prestamo respectivo
+create or replace procedure sp_liquida_multa(vidlector char,vnoejemplar number,vidmaterial char)
+as
+vmonto number(5);
+vadeudo number(5);
+vnewadeudo number(5);
+begin
+    select adeudo
+    into vadeudo
+    from lector
+    where idlector=vidlector;
+    select monto
+    into vmonto
+    from prestamo
+    where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
+    vnewadeudo:=vadeudo-vmonto;
+    update prestamo set fechamulta=null, diasatraso=null,monto=null
+    where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
+    update lector set adeudo=vnewadeudo where idlector=vidlector;
+    delete from prestamo 
+    where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
+    dbms_output.put_line('se elimino la multa exitosamente');
+end;
 /
-
-CREATE OR REPLACE PROCEDURE SP_BAJA_PRESTAMO(VIDLECTOR CHAR,VNOEJEMPLAR NUMBER,VIDMATERIAL CHAR)
-AS
-VFECHAVENC DATE;
-VFECHADEV DATE;
-VAUX NUMBER(3);
-BEGIN
-    SELECT FECHAVENC
-    INTO VFECHAVENC
-    FROM PRESTAMO
-    WHERE IDLECTOR=VIDLECTOR AND NOEJEMPLAR=VNOEJEMPLAR AND IDMATERIAL=VIDMATERIAL;
-    VFECHADEV:=SYSDATE+15;
-    VAUX:=TRUNC(VFECHADEV)-TRUNC(VFECHAVENC);
-    IF (VAUX<=0) THEN
-        DELETE FROM PRESTAMO WHERE IDLECTOR=VIDLECTOR AND NOEJEMPLAR=VNOEJEMPLAR AND IDMATERIAL=VIDMATERIAL;
-        DBMS_OUTPUT.PUT_LINE('EL PRESTAMO SE BORRO CORRECTAMENTE');
-    ELSE
-        SP_MULTA(VIDLECTOR,VNOEJEMPLAR,VIDMATERIAL);
-    END IF;
-END;
+--baja de prestamo
+create or replace procedure sp_baja_prestamo(vidlector char,vnoejemplar number,vidmaterial char)
+as
+vfechavenc date;
+vfechadev date;
+vaux number(3);
+begin
+    select fechavenc
+    into vfechavenc
+    from prestamo
+    where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
+    vfechadev:=sysdate+15;
+    vaux:=trunc(vfechadev)-trunc(vfechavenc);
+    if (vaux<=0) then
+        delete from prestamo where idlector=vidlector and noejemplar=vnoejemplar and idmaterial=vidmaterial;
+        dbms_output.put_line('el prestamo se borro correctamente');
+    else
+        sp_multa(vidlector,vnoejemplar,vidmaterial);
+    end if;
+end;
 /
-DROP PROCEDURE SP_ALTA_LECTOR;
-DROP PROCEDURE SP_ALTA_TIPO_LECTOR;
-DROP PROCEDURE SP_ALTA_AUTOR;
-DROP PROCEDURE SP_ALTA_DIRECTOR;
-DROP PROCEDURE SP_ALTA_MATERIAL;
-DROP PROCEDURE SP_ALTA_TESIS;
-DROP PROCEDURE SP_ALTA_LIBRO;
-DROP PROCEDURE SP_ALTA_EJEMPLAR;
-DROP PROCEDURE SP_REFRENDO_PRESTAMO;
-COMMIT;
+drop procedure sp_alta_lector;
+drop procedure sp_alta_tipo_lector;
+drop procedure sp_alta_autor;
+drop procedure sp_alta_director;
+drop procedure sp_alta_material;
+drop procedure sp_alta_tesis;
+drop procedure sp_alta_libro;
+drop procedure sp_alta_ejemplar;
+drop procedure sp_alta_pertenece;
+drop procedure sp_baja_autor;
+drop procedure sp_baja_tipo_lector;
+drop procedure sp_baja_lector;
+drop procedure sp_baja_director;
+drop procedure sp_baja_material;
+drop procedure sp_alta_prestamo;
+drop procedure sp_refrendo_prestamo;
+drop procedure sp_multa;
+drop procedure sp_adeudo;
+drop procedure sp_liquida_multa;
+drop procedure sp_baja_prestamo;
+commit;

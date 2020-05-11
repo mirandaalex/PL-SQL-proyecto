@@ -1,126 +1,116 @@
-SET SERVEROUTPUT ON
---*******************************FUNCIONES**********************************
---FUNCION QUE CALCULA LA FECHA DE DEVOLUCION A PARTIR DE LA FECHA ACTUAL
---IN NUMERO de identificacion del lector
---OUT FECHA que representa la fecha de devolucion 
-CREATE OR REPLACE FUNCTION FT_FECHADEV (IDLECT CHAR)
-RETURN DATE
-IS
-VDIASPREST TIPOLECTOR.DIASPREST%TYPE;
-VDATEDEV DATE;
-BEGIN
-    SELECT DIASPREST
-    INTO VDIASPREST
-    FROM LECTOR  
-    NATURAL JOIN TIPOLECTOR 
-    WHERE IDLECTOR=IDLECT;
-    VDATEDEV:=SYSDATE+VDIASPREST;
-    RETURN (VDATEDEV);
-END FT_FECHADEV;
+set serveroutput on
+--*******************************funciones**********************************
+--funcion que calcula la fecha de devolucion a partir de la fecha actual
+create or replace function ft_fechadev (idlect char)
+return date
+is
+vdiasprest tipolector.diasprest%type;
+vdatedev date;
+begin
+    select diasprest
+    into vdiasprest
+    from lector  
+    natural join tipolector 
+    where idlector=idlect;
+    vdatedev:=sysdate+vdiasprest;
+    return (vdatedev);
+end ft_fechadev;
 /
---FUNCION PARA LOS REFRENDOS
-CREATE OR REPLACE FUNCTION FT_OBTIENE_REFRENDO(IDLECT CHAR)
-RETURN NUMBER
-IS
-    VREFRENDO NUMBER(5);
-    VTIPO VARCHAR2(12);
-BEGIN
-    SELECT TIPO 
-    INTO VTIPO
-    FROM LECTOR
-    WHERE IDLECTOR = IDLECT; 
-    IF VTIPO = 'ESTUDIANTE' THEN
-        SELECT REFRENDOS 
-        INTO VREFRENDO
-        FROM TIPOLECTOR
-        WHERE TIPO=VTIPO;
-    END IF;
-    IF VTIPO = 'PROFESOR' THEN
-        SELECT REFRENDOS 
-        INTO VREFRENDO
-        FROM TIPOLECTOR
-        WHERE TIPO=VTIPO;
-    END IF;
-    IF VTIPO = 'INVESTIGADOR' THEN
-        SELECT REFRENDOS 
-        INTO VREFRENDO
-        FROM TIPOLECTOR
-        WHERE TIPO=VTIPO;
-    END IF;
-    RETURN (VREFRENDO);
-END FT_OBTIENE_REFRENDO;
+--funcion para obtener los refrendos
+create or replace function ft_obtiene_refrendo(idlect char)
+return number
+is
+    vrefrendo number(5);
+    vtipo varchar2(12);
+begin
+    select tipo 
+    into vtipo
+    from lector
+    where idlector = idlect; 
+    if vtipo = 'estudiante' then
+        select refrendos 
+        into vrefrendo
+        from tipolector
+        where tipo=vtipo;
+    end if;
+    if vtipo = 'profesor' then
+        select refrendos 
+        into vrefrendo
+        from tipolector
+        where tipo=vtipo;
+    end if;
+    if vtipo = 'investigador' then
+        select refrendos 
+        into vrefrendo
+        from tipolector
+        where tipo=vtipo;
+    end if;
+    return (vrefrendo);
+end ft_obtiene_refrendo;
 /
---FUNCION QUE DEVUELVE EL NUMERO DE REFRENDOS RESTANTES
-CREATE OR REPLACE FUNCTION FT_ACTUALIZA_REFRENDO(VIDLECT CHAR,VNOEJEMPLAR NUMBER,VIDMATERIAL CHAR)
-RETURN NUMBER
-IS
-    VREFRENDOSRESTANTES NUMBER(5);
-BEGIN
-    SELECT NUMREFRENDO 
-    INTO VREFRENDOSRESTANTES
-    FROM PRESTAMO
-    WHERE IDLECTOR = VIDLECT 
-    AND NOEJEMPLAR = VNOEJEMPLAR
-    AND IDMATERIAL = VIDMATERIAL;
-    VREFRENDOSRESTANTES:=VREFRENDOSRESTANTES - 1;
-    RETURN (VREFRENDOSRESTANTES);
-END FT_ACTUALIZA_REFRENDO;
+--funcion que devuelve el numero de refrendos restantes
+create or replace function ft_actualiza_refrendo(vidlect char,vnoejemplar number,vidmaterial char)
+return number
+is
+    vrefrendosrestantes number(5);
+begin
+    select numrefrendo 
+    into vrefrendosrestantes
+    from prestamo
+    where idlector = vidlect 
+    and noejemplar = vnoejemplar
+    and idmaterial = vidmaterial;
+    vrefrendosrestantes:=vrefrendosrestantes - 1;
+    return (vrefrendosrestantes);
+end ft_actualiza_refrendo;
 /
---FUNCION QUE CALCULA EL NUMERO DE MATERIALES QUE PUEDE SACAR
-CREATE OR REPLACE FUNCTION FT_MATERIALRESTANTE(vIDLEC IN CHAR)
-RETURN number
-IS
-vCantidad NUMBER;
-vMax NUMBER;
-VAUX NUMBER;
-BEGIN
-    SELECT count(*)  
-    INTO vCantidad
-    FROM prestamo
-    WHERE IdLector=vIDLEC;
-    SELECT limitemat
-    INTO vMax
-    FROM tipolector
-    WHERE TIPO=(SELECT TIPO
-                FROM LECTOR
-                WHERE IdLector=vIDLEC);
-    IF (vCantidad=0) THEN
+--funcion que calcula el numero de materiales que puede sacar
+create or replace function ft_materialrestante(vidlec in char)
+return number
+is
+vcantidad number;
+vmax number;
+vaux number;
+begin
+    select count(*)  
+    into vcantidad
+    from prestamo
+    where idlector=vidlec;
+    select limitemat
+    into vmax
+    from tipolector
+    where tipo=(select tipo
+                from lector
+                where idlector=vidlec);
+    if (vcantidad=0) then
         return(vmax);
-    ELSE
-        VAUX:=vmax-vCantidad;
-        return(VAUX);
-    END IF;
-END FT_MATERIALRESTANTE;
+    else
+        vaux:=vmax-vcantidad;
+        return(vaux);
+    end if;
+end ft_materialrestante;
 /
-
---FUNCION QUE VERIFICA SI HAY MULTAS A CREAR
-CREATE OR REPLACE FUNCTION ft_VERFICAMULTA(vIDLEC IN CHAR)
-RETURN NUMBER
-IS
-VADEUDO NUMBER(5);
-VNMULTAS NUMBER(1);
-BEGIN
-    SELECT ADEUDO
-    INTO VADEUDO
-    FROM LECTOR
-    WHERE IDLECTOR=vIDLEC;
-    VNMULTAS:=0;
-    IF (VADEUDO<>0) THEN
-        VNMULTAS:=1;
-    END IF;
-    RETURN (VNMULTAS);
-END;
+--funcion que verifica si hay multas existentes del lector
+create or replace function ft_verficamulta(vidlec in char)
+return number
+is
+vadeudo number(5);
+vnmultas number(1);
+begin
+    select adeudo
+    into vadeudo
+    from lector
+    where idlector=vidlec;
+    vnmultas:=0;
+    if (vadeudo<>0) then
+        vnmultas:=1;
+    end if;
+    return (vnmultas);
+end;
 /
-
-DROP FUNCTION FT_PRESTAMODISP;
-DROP FUNCTION FT_MULTA;
-DROP FUNCTION FT_FECHADEV;
-DROP FUNCTION FT_OBTIENE_REFRENDO;
-DROP FUNCTION FT_ACTUALIZA_REFRENDO;
-DROP FUNCTION FT_MATERIALRESTANTE;
-COMMIT;
-
-
-
-
-
+drop function ft_multa;
+drop function ft_fechadev;
+drop function ft_obtiene_refrendo;
+drop function ft_actualiza_refrendo;
+drop function ft_materialrestante;
+commit;

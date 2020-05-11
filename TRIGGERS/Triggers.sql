@@ -1,81 +1,57 @@
-SET SERVEROUTPUT ON
---********************************TRIGGERS**********************************
---TRIGGER PARA CAMBIAR EL ESTATUS AL INSERTAR EN PRESTAMO CUANDO SE AGREGA UN PRESTAMO
-CREATE OR REPLACE TRIGGER TR_ESTATUS_PRESTAMO
-BEFORE INSERT OR DELETE ON PRESTAMO
-FOR EACH ROW
-DECLARE
-VESTATUS VARCHAR2(20);
-BEGIN  
-    IF INSERTING THEN
-        SELECT ESTATUS
-        INTO VESTATUS
-        FROM EJEMPLAR
-        WHERE IDMATERIAL=:NEW.IDMATERIAL AND NOEJEMPLAR=:NEW.NOEJEMPLAR;
-        IF (VESTATUS='DISPONIBLE') THEN
-            UPDATE EJEMPLAR SET ESTATUS='PRESTAMO' 
-            WHERE IDMATERIAL=:NEW.IDMATERIAL 
-            AND NOEJEMPLAR=:NEW.NOEJEMPLAR;
-        ELSE
-            IF (VESTATUS='NO SALE' OR VESTATUS='MANTENIMIENTO') THEN
-                RAISE_APPLICATION_ERROR (-20600,' EL MATERIAL TIENE EL ESTATUS: '||VESTATUS||' Y NO ESTA AUTORIZADO PARA SU PRESTAMO');
-            END IF;
-        END IF;
-    END IF;
-    IF DELETING THEN
-        SELECT ESTATUS
-        INTO VESTATUS
-        FROM EJEMPLAR
-        WHERE IDMATERIAL=:OLD.IDMATERIAL AND NOEJEMPLAR=:OLD.NOEJEMPLAR;
-        IF (VESTATUS='PRESTAMO') THEN
-            UPDATE EJEMPLAR SET ESTATUS='DISPONIBLE' 
-            WHERE IDMATERIAL=:OLD.IDMATERIAL 
-            AND NOEJEMPLAR=:OLD.NOEJEMPLAR;
-        END IF;
-    END IF;
-END;
+set serveroutput on
+--********************************triggers**********************************
+--trigger para cambiar el estatus del ejemplar al insertar o eliminar en la tabla prestamo
+create or replace trigger tr_estatus_prestamo
+before insert or delete on prestamo
+for each row
+declare
+vestatus varchar2(20);
+begin  
+    if inserting then
+        select estatus
+        into vestatus
+        from ejemplar
+        where idmaterial=:new.idmaterial and noejemplar=:new.noejemplar;
+        if (vestatus='disponible') then
+            update ejemplar set estatus='prestamo' 
+            where idmaterial=:new.idmaterial 
+            and noejemplar=:new.noejemplar;
+        else
+            if (vestatus='no sale' or vestatus='mantenimiento') then
+                raise_application_error (-20600,' el material tiene el estatus: '||vestatus||' y no esta autorizado para su prestamo');
+            end if;
+        end if;
+    end if;
+    if deleting then
+        select estatus
+        into vestatus
+        from ejemplar
+        where idmaterial=:old.idmaterial and noejemplar=:old.noejemplar;
+        if (vestatus='prestamo') then
+            update ejemplar set estatus='disponible' 
+            where idmaterial=:old.idmaterial 
+            and noejemplar=:old.noejemplar;
+        end if;
+    end if;
+end;
 /
---TRIGUER PARA IMPEDIR ELIMINAR UN LECTOR SI TIENE PRESTAMOS
-CREATE OR REPLACE TRIGGER TR_ELIMINA_LECTOR_ADEUDO
-AFTER DELETE ON LECTOR
-FOR EACH ROW
-DECLARE
-VIDLECTOR LECTOR.IDLECTOR%TYPE;
-BEGIN
-    SELECT IDLECTOR
-    INTO VIDLECTOR
-    FROM LECTOR
-    WHERE :OLD.IDLECTOR=ANY(SELECT IDLECTOR
-                        FROM PRESTAMO);
-    IF (VIDLECTOR <> NULL) THEN
-        RAISE_APPLICATION_ERROR (-20601,'EL LECTOR TIENE PRESTAMOS A SU NOMBRE, NO SE PUEDE BORRAR');
-    END IF;
-END;
+--triguer para impedir eliminar un lector si tiene prestamos a su nombre
+create or replace trigger tr_elimina_lector_adeudo
+after delete on lector
+for each row
+declare
+vidlector lector.idlector%type;
+begin
+    select idlector
+    into vidlector
+    from lector
+    where :old.idlector=any(select idlector
+                        from prestamo);
+    if (vidlector <> null) then
+        raise_application_error (-20601,'el lector tiene prestamos a su nombre, no se puede borrar');
+    end if;
+end;
 /
---TRIGGER PARA IMPEDIR ELIMINAR UN MATERIAL SI ALGUN EJEMPLAR SE ENCUENTRA PRESTADO
-CREATE OR REPLACE TRIGGER TR_ELIMINA_MATERIAL
-AFTER DELETE ON MATERIAL
-FOR EACH ROW
-DECLARE
-VIDMATERIAL MATERIAL.IDMATERIAL%TYPE;
-BEGIN
-    SELECT IDMATERIAL
-    INTO VIDMATERIAL
-    FROM MATERIAL
-    WHERE :OLD.IDMATERIAL=ANY(SELECT IDMATERIAL
-                            FROM EJEMPLAR
-                            WHERE ESTATUS='PRESTAMO');
-    IF (VIDMATERIAL <> NULL) THEN
-        RAISE_APPLICATION_ERROR (-20602,'EL MATERIAL TIENE AL MENOS UN EJEMPLAR EN PRESTAMO, POR LO CUAL NO SE PUEDE ELIMINAR');
-    END IF;
-END;
-/
-
-
-
-DROP TRIGGER TR_ESTATUS_PRESTAMO;
-DROP TRIGGER TR_ADEUDOS;
-DROP TRIGGER TR_ELIMINA_LECTOR_ADEUDO;
-DROP TRIGGER TR_ELIMINA_MATERIAL;
-DROP TRIGGER TR_IMPIDE_PRESTAMO_LECTOR;
-COMMIT;
+drop trigger tr_estatus_prestamo;
+drop trigger tr_elimina_lector_adeudo;
+commit;
