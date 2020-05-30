@@ -36,4 +36,3 @@ begin
 end;
 /
 drop trigger tr_estatus_prestamo;
-commit;
