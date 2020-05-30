@@ -21,30 +21,19 @@ create or replace function ft_obtiene_refrendo(idlect char)
 return number
 is
     vrefrendo number(5);
-    vtipo varchar2(12);
+    vtipo lector.tipo%TYPE;
 begin
     select tipo 
     into vtipo
     from lector
     where idlector = idlect; 
-    if vtipo = 'estudiante' then
+    if vtipo = 'estudiante' OR vtipo = 'profesor' OR vtipo = 'investigador' then
         select refrendos 
         into vrefrendo
         from tipolector
         where tipo=vtipo;
     end if;
-    if vtipo = 'profesor' then
-        select refrendos 
-        into vrefrendo
-        from tipolector
-        where tipo=vtipo;
-    end if;
-    if vtipo = 'investigador' then
-        select refrendos 
-        into vrefrendo
-        from tipolector
-        where tipo=vtipo;
-    end if;
+    
     return (vrefrendo);
 end ft_obtiene_refrendo;
 /
@@ -113,4 +102,3 @@ drop function ft_fechadev;
 drop function ft_obtiene_refrendo;
 drop function ft_actualiza_refrendo;
 drop function ft_materialrestante;
-commit;
